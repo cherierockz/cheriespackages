@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>cheries-packages</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', sans-serif;
       background-color: #1e1e1e;
       color: #f5f5f5;
       margin: 0;
@@ -39,11 +39,8 @@
     }
     .package-container a {
       color: #4fc3f7;
-      text-decoration: none;
     }
-    .package-container a:hover {
-      text-decoration: underline;
-    }
+
     .review-section {
       max-width: 600px;
       margin: 2rem auto;
@@ -51,14 +48,15 @@
       background-color: #1f1f1f;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-      color: #f0f0f0;
     }
+
     .review-carousel {
       position: relative;
       height: 100px;
       overflow: hidden;
       margin-bottom: 1rem;
     }
+
     .review-slide {
       opacity: 0;
       transition: opacity 0.5s ease-in-out;
@@ -67,32 +65,43 @@
       left: 0;
       width: 100%;
     }
+
     .review-slide.active {
       opacity: 1;
       position: relative;
     }
+
+    .star {
+      color: gold;
+      margin-left: 5px;
+    }
+
     #toggle-review-form {
       color: #4fc3f7;
       text-decoration: none;
     }
+
     #toggle-review-form:hover {
       text-decoration: underline;
     }
-    .star-rating {
-      color: gold;
+
+    #review-form-container {
+      margin-top: 1rem;
     }
+
     iframe {
       width: 100%;
+      max-width: 600px;
       height: 500px;
       border: none;
-      border-radius: 8px;
-      margin-top: 1rem;
+      border-radius: 12px;
     }
   </style>
 </head>
 <body>
+
   <h1>/home/cheries-packages</h1>
-  <p>from the owner of <a href="https://er0sion.org">the erosion organization</a>.</p>
+  <p>from the owner of <a href="https://er0sion.org/">the erosion organization</a></p>
   <p>Find quality Linux packages 24/7!</p>
   <p><strong>Note:</strong> Help me keep the site free! <a href="https://cash.app/$relaxmaxie">Tip Here! :D</a></p>
   <em>Cash App only</em>
@@ -100,77 +109,59 @@
   <h2>Newest releases -</h2>
   <div class="package-container">
     <p><a href="public/packages/cheriesfpscounter.deb">Download cheriesfpscounter.deb</a></p>
-    <p><strong>Install</strong><br>sudo apt install ./cheriesfpscounter.deb</p>
-    <p><strong>Run</strong><br>cheriesfpscounter</p>
+    <p><strong>Install:</strong><br>sudo apt install ./cheriesfpscounter.deb</p>
+    <p><strong>Run:</strong><br>cheriesfpscounter</p>
   </div>
 
-  <hr>
-
   <div class="review-section">
-    <h2>Latest Reviews</h2>
-    <div id="carousel" class="review-carousel"></div>
+    <h2>What people are saying</h2>
+    <div class="review-carousel" id="review-carousel"></div>
     <p><a href="#" id="toggle-review-form">Write a review</a></p>
-    <div id="form-frame" style="display: none;">
-      <!-- Replace this with your actual Google Form URL -->
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScaZFcV58GwuAa-UKC0sPr5b7C8mCCxtxzNnoRzid-Vy6Bthw/viewform?usp=header">Loading…</iframe>
+    <div id="review-form-container" style="display: none;">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScaZFcV58GwuAa-UKC0sPr5b7C8mCCxtxzNnoRzid-Vy6Bthw/viewform?usp=header" loading="lazy">Loading…</iframe>
     </div>
   </div>
 
   <script>
-    const carousel = document.getElementById('carousel');
-    const formToggle = document.getElementById('toggle-review-form');
-    const formFrame = document.getElementById('form-frame');
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL4-_MqMykY98OOMEnold3X38601UMEk0lI6TTwldvzTlVbHQC-vgqqykjHoCIGHKnq3rWOnPoAzn8/pub?output=csv";
+    const carousel = document.getElementById("review-carousel");
 
-    formToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      formFrame.style.display = formFrame.style.display === 'none' ? 'block' : 'none';
-    });
+    async function loadReviews() {
+      const res = await fetch(csvUrl);
+      const data = await res.text();
+      const rows = data.trim().split("\n").slice(1); // skip header
 
-    let reviews = [];
-    let currentIndex = 0;
+      const reviews = rows.map(row => {
+        const [timestamp, name, message, rating] = row.split(",");
+        return { name, message, rating };
+      }).reverse(); // show newest first
 
-    function showSlide(index) {
-      const slides = document.querySelectorAll('.review-slide');
-      slides.forEach(slide => slide.classList.remove('active'));
-      if (slides[index]) slides[index].classList.add('active');
-    }
-
-    function loadReviews() {
-      fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSL4-_MqMykY98OOMEnold3X38601UMEk0lI6TTwldvzTlVbHQC-vgqqykjHoCIGHKnq3rWOnPoAzn8/pub?output=csv")
-        .then(response => response.text())
-        .then(csv => {
-          const lines = csv.trim().split("\n").slice(1); // skip header
-          reviews = lines.map(line => {
-            const [name, text, rating] = line.split(",");
-            return { name: name.trim(), text: text.trim(), rating: parseInt(rating.trim()) || 0 };
-          }).filter(r => r.name && r.text); // remove blanks
-
-          renderCarousel();
-        })
-        .catch(err => {
-          carousel.innerHTML = "<p>Couldn't load reviews :(</p>";
-        });
-    }
-
-    function renderCarousel() {
-      carousel.innerHTML = '';
-      reviews.forEach((review, i) => {
-        const div = document.createElement('div');
-        div.className = 'review-slide' + (i === 0 ? ' active' : '');
-        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-        div.innerHTML = `<strong>${review.name}</strong><br>${review.text}<br><span class="star-rating">${stars}</span>`;
+      for (const review of reviews) {
+        const div = document.createElement("div");
+        div.className = "review-slide";
+        div.innerHTML = `<strong>${review.name}:</strong> ${review.message}<span class="star"> ${"★".repeat(review.rating || 0)}</span>`;
         carousel.appendChild(div);
-      });
-
-      if (reviews.length > 0) {
-        setInterval(() => {
-          currentIndex = (currentIndex + 1) % reviews.length;
-          showSlide(currentIndex);
-        }, 5000);
       }
+
+      // rotate reviews
+      const slides = document.querySelectorAll(".review-slide");
+      let index = 0;
+      function showSlide() {
+        slides.forEach((s, i) => s.classList.toggle("active", i === index));
+        index = (index + 1) % slides.length;
+      }
+      showSlide();
+      setInterval(showSlide, 4000);
     }
 
     loadReviews();
+
+    document.getElementById("toggle-review-form").addEventListener("click", e => {
+      e.preventDefault();
+      const form = document.getElementById("review-form-container");
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    });
   </script>
+
 </body>
 </html>
