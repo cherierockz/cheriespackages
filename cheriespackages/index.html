@@ -12,33 +12,72 @@
       margin: 0;
       padding: 2rem;
       text-align: center;
+      position: relative;
     }
+
     h1 {
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
     }
+
     p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #ccc;
+      margin: 0.5rem 0;
     }
+
     a {
       color: #66ccff;
       text-decoration: none;
     }
+
     a:hover {
       text-decoration: underline;
     }
+
+    .hamburger-lines {
+      position: fixed;
+      top: 20px;
+      right: 25px;
+      width: 30px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .hamburger-lines div {
+      background-color: #f5f5f5;
+      height: 3px;
+      margin: 6px 0;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    .dropdown-menu {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 1rem;
+      display: none;
+      text-align: right;
+      z-index: 999;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      margin: 0.5rem 0;
+      color: #4fc3f7;
+    }
+
     .package-container {
       background-color: #1e1e1e;
-      color: #f1f1f1;
       padding: 1.5rem;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
       font-family: monospace;
-    }
-    .package-container a {
-      color: #4fc3f7;
     }
 
     .review-section {
@@ -78,7 +117,6 @@
 
     #toggle-review-form {
       color: #4fc3f7;
-      text-decoration: none;
     }
 
     #toggle-review-form:hover {
@@ -99,21 +137,43 @@
   </style>
 </head>
 <body>
+   
+
+  <div class="hamburger-lines" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+  </div>
+
+
+  <div class="dropdown-menu" id="menu">
+    <a href="#">Home</a>
+    <a href="public/packages/cheriesfpscounter.deb">All Packages</a>
+    <a href="404.html">Premium Applications</a>
+    <a href="#reviews">Reviews</a>
+  </div>
 
   <h1>/home/cheries-packages</h1>
+  <h3>IF THERE IS ANY PROBLEMS WITH PACKAGES JOIN <a href="https://dsc.gg/erosion/">THE DISCORD</a></h3>
   <p>from the owner of <a href="https://er0sion.org/">the erosion organization</a></p>
   <p>Find quality Linux packages 24/7!</p>
   <p><strong>Note:</strong> Help me keep the site free! <a href="https://cash.app/$relaxmaxie">Tip Here! :D</a></p>
   <em>Cash App only</em>
 
   <h2>Newest releases -</h2>
+
   <div class="package-container">
     <p><a href="public/packages/cheriesfpscounter.deb">Download cheriesfpscounter.deb</a></p>
     <p><strong>Install:</strong><br>sudo apt install ./cheriesfpscounter.deb</p>
     <p><strong>Run:</strong><br>cheriesfpscounter</p>
   </div>
 
-  <div class="review-section">
+  <div class="package-container">
+    <p><a href="public/packages/system-cleaner.deb">Download system-cleaner.deb</a></p>
+    <p><strong>Install:</strong><br>sudo apt install ./system-cleaner.deb</p>
+    <p><strong>Run:</strong><br>system-cleaner</p>
+  </div>
+
+  <div class="review-section" id="reviews">
     <h2>What people are saying</h2>
     <div class="review-carousel" id="review-carousel"></div>
     <p><a href="#" id="toggle-review-form">Write a review</a></p>
@@ -123,27 +183,32 @@
   </div>
 
   <script>
+
+    function toggleMenu() {
+      const menu = document.getElementById("menu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL4-_MqMykY98OOMEnold3X38601UMEk0lI6TTwldvzTlVbHQC-vgqqykjHoCIGHKnq3rWOnPoAzn8/pub?output=csv";
     const carousel = document.getElementById("review-carousel");
 
     async function loadReviews() {
       const res = await fetch(csvUrl);
       const data = await res.text();
-      const rows = data.trim().split("\n").slice(1); // skip header
+      const rows = data.trim().split("\n").slice(1);
 
       const reviews = rows.map(row => {
         const [timestamp, name, message, rating] = row.split(",");
         return { name, message, rating };
-      }).reverse(); // show newest first
+      }).reverse();
 
       for (const review of reviews) {
         const div = document.createElement("div");
         div.className = "review-slide";
-        div.innerHTML = `<strong>${review.name}:</strong> ${review.message}<span class="star"> ${"★".repeat(review.rating || 0)}</span>`;
+        div.innerHTML = `<strong>${review.name}:</strong> ${review.message}<span class="star">${"★".repeat(review.rating || 0)}</span>`;
         carousel.appendChild(div);
       }
 
-      // rotate reviews
       const slides = document.querySelectorAll(".review-slide");
       let index = 0;
       function showSlide() {

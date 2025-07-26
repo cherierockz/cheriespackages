@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cherie's Docs & Releases</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #66ccff;
+    }
+
+    h2 {
+      color: #4fc3f7;
+      margin-top: 2rem;
+    }
+
+    p, li {
+      color: #ccc;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .section {
+      background-color: #2a2a2a;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin: 2rem auto;
+      max-width: 800px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+
+    a {
+      color: #66ccff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      margin-top: 2rem;
+      display: inline-block;
+      color: #999;
+      font-size: 0.95rem;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 1rem;
+    }
+
+    .tip {
+      margin-top: 3rem;
+      font-style: italic;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Package Documentation/h1>
+
+  <div class="section">
+    <h2>Installation Guide</h2>
+    <p>Here’s how to install any of the `.deb` packages:</p>
+    <ul>
+      <li>1. Download the `.deb` package you want below</li>
+      <li>2. Open Terminal and navigate to the download location</li>
+      <li>3. Run: <code>sudo apt install ./package-name.deb</code></li>
+      <li>4. Once installed, you can run the app using its command name</li>
+    </ul>
+    <p>Make sure to replace <code>package-name.deb</code> with the actual filename.</p>
+  </div>
+
+  <div class="section">
+    <h2>Available Releases</h2>
+    <ul>
+      <li>
+        <strong>cheriesfpscounter</strong><br>
+        <a href="public/packages/cheriesfpscounter.deb">Download cheriesfpscounter.deb</a><br>
+        Run: <code>cheriesfpscounter</code>
+      </li>
+      <li>
+        <strong>system-cleaner</strong><br>
+        <a href="public/packages/system-cleaner.deb">Download system-cleaner.deb</a><br>
+        Run: <code>system-cleaner</code>
+      </li>
+      <!-- Add more releases here -->
+    </ul>
+  </div>
+
+  <p class="tip">Want to support this site? <a href="https://cash.app/$relaxmaxie">Tip here</a></p>
+  <a class="back-link" href="index.html">← Back to Home</a>
+
+</body>
+</html>
